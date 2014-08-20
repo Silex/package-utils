@@ -50,6 +50,17 @@
                                     (epl-find-upgrades))))))
   (epl-upgrade (epl-find-installed-package name)))
 
+;;;###autoload
+(defun package-remove-by-name (name)
+  "Uninstall the package NAME."
+  (interactive (list (completing-read "Remove package: "
+                                      (mapcar (lambda (package)
+                                                (epl-package-name package))
+                                              (epl-installed-packages)))))
+  (dolist (package (epl-installed-packages))
+    (if (string-equal name (epl-package-name package))
+        (epl-package-delete package))))
+
 (provide 'package-utils)
 
 ;;; package-utils.el ends here

@@ -8,6 +8,7 @@ Interactive extensions for `package.el`
 --------------------------|--------------------------------------------
 `package-upgrade-all`     | upgrades all packages that can be upgraded.
 `package-upgrade-by-name` | upgrades an installed package by name.
+`package-remove-by-name`  | removes an installed package by name.
 
 ## Contributions are welcome!
 
