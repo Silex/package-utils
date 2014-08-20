@@ -38,6 +38,18 @@
   (package-refresh-contents)
   (epl-upgrade))
 
+;;;###autoload
+(defun package-upgrade-by-name (name)
+  "Upgrade the package NAME."
+  (interactive
+   (progn
+     (package-refresh-contents)
+     (list (completing-read "Upgrade package: "
+                            (mapcar (lambda (package)
+                                      (epl-package-name (epl-upgrade-installed package)))
+                                    (epl-find-upgrades))))))
+  (epl-upgrade (epl-find-installed-package name)))
+
 (provide 'package-utils)
 
 ;;; package-utils.el ends here
