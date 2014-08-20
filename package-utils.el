@@ -29,6 +29,15 @@
 ;;
 ;;; Code:
 
+(require 'epl)
+
+;;;###autoload
+(defun package-upgrade-all ()
+  "Upgrade all packages that can be upgraded."
+  (interactive)
+  (package-refresh-contents)
+  (epl-upgrade))
+
 (provide 'package-utils)
 
 ;;; package-utils.el ends here
