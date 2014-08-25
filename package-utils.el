@@ -32,14 +32,14 @@
 (require 'epl)
 
 ;;;###autoload
-(defun package-upgrade-all ()
+(defun package-utils-upgrade-all ()
   "Upgrade all packages that can be upgraded."
   (interactive)
   (package-refresh-contents)
   (epl-upgrade))
 
 ;;;###autoload
-(defun package-upgrade-by-name (name)
+(defun package-utils-upgrade-by-name (name)
   "Upgrade the package NAME."
   (interactive
    (progn
@@ -51,7 +51,7 @@
   (epl-upgrade (epl-find-installed-package name)))
 
 ;;;###autoload
-(defun package-remove-by-name (name)
+(defun package-utils-remove-by-name (name)
   "Uninstall the package NAME."
   (interactive (list (completing-read "Remove package: "
                                       (mapcar (lambda (package)

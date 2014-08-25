@@ -4,11 +4,11 @@ Interactive extensions for `package.el`
 
 ## Interactive functions
 
- Function                 | Description
---------------------------|--------------------------------------------
-`package-upgrade-all`     | upgrades all packages that can be upgraded.
-`package-upgrade-by-name` | upgrades an installed package by name.
-`package-remove-by-name`  | removes an installed package by name.
+ Function                       | Description
+--------------------------------|--------------------------------------------
+`package-utils-upgrade-all`     | upgrades all packages that can be upgraded.
+`package-utils-upgrade-by-name` | upgrades an installed package by name.
+`package-utils-remove-by-name`  | removes an installed package by name.
 
 ## Contributions are welcome!
 
