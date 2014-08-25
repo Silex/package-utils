@@ -4,7 +4,7 @@
 ;; URL: https://github.com/Silex/package-utils
 ;; Keywords: package, convenience
 ;; Version: 0.0.1
-;; Package-Requires: ((epl "0.7"))
+;; Package-Requires: ((epl "0.7-cvs"))
 
 ;; This file is NOT part of GNU Emacs.
 
