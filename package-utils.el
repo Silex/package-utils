@@ -45,21 +45,17 @@
    (progn
      (package-refresh-contents)
      (list (completing-read "Upgrade package: "
-                            (mapcar (lambda (package)
-                                      (epl-package-name (epl-upgrade-installed package)))
-                                    (epl-find-upgrades))))))
-  (epl-upgrade (epl-find-installed-package name)))
+                            (mapcar #'symbol-name
+                                    (mapcar #'epl-package-name (epl-outdated-packages)))))))
+  (epl-upgrade (epl-find-installed-packages (intern name))))
 
 ;;;###autoload
 (defun package-utils-remove-by-name (name)
   "Uninstall the package NAME."
-  (interactive (list (completing-read "Remove package: "
-                                      (mapcar (lambda (package)
-                                                (epl-package-name package))
-                                              (epl-installed-packages)))))
-  (dolist (package (epl-installed-packages))
-    (if (string-equal name (epl-package-name package))
-        (epl-package-delete package))))
+  (interactive
+   (list (completing-read "Remove package: "
+                          (mapcar #'symbol-name (mapcar #'epl-package-name (epl-installed-packages))))))
+  (epl-package-delete (car (epl-find-installed-packages (intern name)))))
 
 (provide 'package-utils)
 
