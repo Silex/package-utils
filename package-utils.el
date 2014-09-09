@@ -36,7 +36,12 @@
   "Upgrade all packages that can be upgraded."
   (interactive)
   (package-refresh-contents)
-  (epl-upgrade))
+  (let ((packages (mapcar #'epl-package-name (epl-outdated-packages))))
+    (if packages
+        (progn
+          (epl-upgrade)
+          (message "Upgraded packages: %s" (mapconcat 'symbol-name packages ", ")))
+      (message "All packages are already up to date."))))
 
 ;;;###autoload
 (defun package-utils-upgrade-by-name (name)
