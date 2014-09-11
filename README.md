@@ -2,15 +2,17 @@
 
 Interactive extensions for `package.el`
 
-## Interactive functions
+## Overview
 
- Function                       | Description
---------------------------------|--------------------------------------------
-`package-utils-upgrade-all`     | upgrades all packages that can be upgraded.
-`package-utils-upgrade-by-name` | upgrades an installed package by name.
-`package-utils-remove-by-name`  | removes an installed package by name.
+The following interactive functions are available:
 
-## Contributions are welcome!
+ Function                                    | Description
+---------------------------------------------|-------------------------------------------------------------------------------------
+<kbd>M-x package-utils-upgrade-all</kbd>     | upgrades all packages that can be upgraded (prefix argument: do no refresh packages)
+<kbd>M-x package-utils-upgrade-by-name</kbd> | upgrades an installed package by name (prefix argument: do not refresh packages)
+<kbd>M-x package-utils-remove-by-name</kbd>  | removes an installed package by name
+
+## Contributions welcome!
 
 Either as suggestions or as pull requests by opening tickets on the
 [issue tracker](https://github.com/Silex/package-utils/issues).
