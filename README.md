@@ -2,6 +2,12 @@
 
 Interactive extensions for `package.el`
 
+## Installation
+
+The recommended way to install package-utils is through MELPA.
+
+Otherwise, simply add `package-utils.el` to your load-path and then `(require 'package-utils)`.
+
 ## Overview
 
 The following interactive functions are available:
