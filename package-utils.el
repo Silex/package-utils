@@ -31,13 +31,18 @@
 
 (require 'epl)
 
+(defun package-utils-read-upgradable-package ()
+  "Read the name of a package to upgrade."
+  (completing-read "Upgrade package: "
+                   (mapcar #'symbol-name (mapcar #'epl-package-name (epl-outdated-packages)))))
+
 ;;;###autoload
-(defun package-utils-upgrade-all (&optional do-not-refresh)
+(defun package-utils-upgrade-all (&optional no-fetch)
   "Upgrade all packages that can be upgraded.
 
-With prefix argument DO-NOT-REFRESH, do not call `package-refresh-contents'."
+With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   (interactive "P")
-  (unless do-not-refresh
+  (unless no-fetch
     (package-refresh-contents))
   (let ((packages (mapcar #'epl-package-name (epl-outdated-packages))))
     (if packages
@@ -47,19 +52,29 @@ With prefix argument DO-NOT-REFRESH, do not call `package-refresh-contents'."
       (message "All packages are already up to date."))))
 
 ;;;###autoload
-(defun package-utils-upgrade-by-name (name &optional do-not-refresh)
+(defun package-utils-upgrade-all-no-fetch ()
+  "Upgrade all packages that can be upgraded without calling `package-refresh-contents' first."
+  (interactive)
+  (package-utils-upgrade-all t))
+
+;;;###autoload
+(defun package-utils-upgrade-by-name (name &optional no-fetch)
   "Upgrade the package NAME.
 
-With prefix argument DO-NOT-REFRESH, do not call `package-refresh-contents'."
+With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   (interactive
    (progn
      (unless current-prefix-arg
        (package-refresh-contents))
-     (list (completing-read "Upgrade package: "
-                            (mapcar #'symbol-name
-                                    (mapcar #'epl-package-name (epl-outdated-packages))))
+     (list (package-utils-read-upgradable-package)
            current-prefix-arg)))
   (epl-upgrade (epl-find-installed-packages (intern name))))
+
+;;;###autoload
+(defun package-utils-upgrade-by-name-no-fetch (name)
+  "Upgrade the package NAME, without calling `package-refresh-contents' first."
+  (interactive (list (package-utils-read-upgradable-package)))
+  (package-utils-upgrade-by-name name t))
 
 ;;;###autoload
 (defun package-utils-remove-by-name (name)

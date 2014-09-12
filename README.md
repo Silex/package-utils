@@ -12,11 +12,13 @@ Otherwise, simply add `package-utils.el` to your load-path and then `(require 'p
 
 The following interactive functions are available:
 
- Function                                    | Description
----------------------------------------------|-------------------------------------------------------------------------------------
-<kbd>M-x package-utils-upgrade-all</kbd>     | upgrades all packages that can be upgraded (prefix argument: do no refresh packages)
-<kbd>M-x package-utils-upgrade-by-name</kbd> | upgrades an installed package by name (prefix argument: do not refresh packages)
-<kbd>M-x package-utils-remove-by-name</kbd>  | removes an installed package by name
+ Function                                             | Description
+----------------------------------------------------- |-------------------------------------------------------------------------------------
+<kbd>M-x package-utils-upgrade-all</kbd>              | upgrades all packages that can be upgraded (prefix argument: do no refresh packages)
+<kbd>M-x package-utils-upgrade-all-no-fetch</kbd>     | upgrades all packages that can be upgraded without refreshing the packages list
+<kbd>M-x package-utils-upgrade-by-name</kbd>          | upgrades an installed package by name (prefix argument: do not refresh packages)
+<kbd>M-x package-utils-upgrade-by-name-no-fetch</kbd> | upgrades an installed package by name without refreshing the packages list
+<kbd>M-x package-utils-remove-by-name</kbd>           | removes an installed package by name
 
 ## Contributions welcome!
 
