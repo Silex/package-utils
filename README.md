@@ -32,6 +32,10 @@ The following interactive functions are available:
 
   Removes an installed package by name.
 
+* <kbd>M-x package-utils-list-upgrades</kbd>
+
+  List all packages that can be upgraded (prefix argument: do no refresh packages).
+
 ## Contributions welcome!
 
 Either as suggestions or as pull requests by opening tickets on the

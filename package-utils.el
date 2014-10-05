@@ -49,17 +49,27 @@
                    'require-match))
 
 ;;;###autoload
-(defun package-utils-upgrade-all (&optional no-fetch)
-  "Upgrade all packages that can be upgraded.
+(defun package-utils-list-upgrades (&optional no-fetch)
+  "List all packages that can be upgraded.
 
 With prefix argument NO-FETCH, do not call `package-refresh-contents'."
+  (interactive "P")
+  (package-utils-upgrade-all current-prefix-arg t))
+
+;;;###autoload
+(defun package-utils-upgrade-all (&optional no-fetch dry-run)
+  "Upgrade all packages that can be upgraded.
+
+With prefix argument NO-FETCH, do not call `package-refresh-contents'.
+When DRY-RUN is true, only display what packages would be upgraded"
   (interactive "P")
   (unless no-fetch
     (package-refresh-contents))
   (package-utils-ensure-upgrades-available)
   (let ((packages (mapcar #'epl-package-name (epl-outdated-packages))))
-    (epl-upgrade)
-    (message "Upgraded packages: %s" (mapconcat 'symbol-name packages ", "))))
+    (unless dry-run
+      (epl-upgrade))
+    (message "%s packages: %s" (if dry-run "Upgradable" "Upgraded") (mapconcat 'symbol-name packages ", "))))
 
 ;;;###autoload
 (defun package-utils-upgrade-all-no-fetch ()
