@@ -34,7 +34,9 @@
 (defun package-utils-read-upgradable-package ()
   "Read the name of a package to upgrade."
   (completing-read "Upgrade package: "
-                   (mapcar #'symbol-name (mapcar #'epl-package-name (epl-outdated-packages)))))
+                   (mapcar #'symbol-name (mapcar #'epl-package-name (epl-outdated-packages)))
+                   nil
+                   'require-match))
 
 ;;;###autoload
 (defun package-utils-upgrade-all (&optional no-fetch)
@@ -81,7 +83,9 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   "Uninstall the package NAME."
   (interactive
    (list (completing-read "Remove package: "
-                          (mapcar #'symbol-name (mapcar #'epl-package-name (epl-installed-packages))))))
+                          (mapcar #'symbol-name (mapcar #'epl-package-name (epl-installed-packages)))
+                          nil
+                          'require-match)))
   (epl-package-delete (car (epl-find-installed-packages (intern name)))))
 
 (provide 'package-utils)
