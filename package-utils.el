@@ -31,8 +31,18 @@
 
 (require 'epl)
 
+(defun package-utils-has-upgradable-packages-p ()
+  "Returns true if there are packages to upgrade, nil otherwise."
+  (not (null (epl-outdated-packages))))
+
+(defun package-utils-ensure-upgrades-available ()
+  "Make an error if there is no upgradable packages."
+  (unless (package-utils-has-upgradable-packages-p)
+    (error "All packages are already up to date")))
+
 (defun package-utils-read-upgradable-package ()
   "Read the name of a package to upgrade."
+  (package-utils-ensure-upgrades-available)
   (completing-read "Upgrade package: "
                    (mapcar #'symbol-name (mapcar #'epl-package-name (epl-outdated-packages)))
                    nil
@@ -46,12 +56,10 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   (interactive "P")
   (unless no-fetch
     (package-refresh-contents))
+  (package-utils-ensure-upgrades-available)
   (let ((packages (mapcar #'epl-package-name (epl-outdated-packages))))
-    (if packages
-        (progn
-          (epl-upgrade)
-          (message "Upgraded packages: %s" (mapconcat 'symbol-name packages ", ")))
-      (message "All packages are already up to date."))))
+    (epl-upgrade)
+    (message "Upgraded packages: %s" (mapconcat 'symbol-name packages ", "))))
 
 ;;;###autoload
 (defun package-utils-upgrade-all-no-fetch ()
