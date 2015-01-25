@@ -35,14 +35,8 @@
   "Returns true if there are packages to upgrade, nil otherwise."
   (not (null (epl-outdated-packages))))
 
-(defun package-utils-ensure-upgrades-available ()
-  "Make an error if there is no upgradable packages."
-  (unless (package-utils-has-upgradable-packages-p)
-    (error "All packages are already up to date")))
-
 (defun package-utils-read-upgradable-package ()
   "Read the name of a package to upgrade."
-  (package-utils-ensure-upgrades-available)
   (completing-read "Upgrade package: "
                    (mapcar #'symbol-name (mapcar #'epl-package-name (epl-outdated-packages)))
                    nil
@@ -65,11 +59,12 @@ When DRY-RUN is true, only display what packages would be upgraded"
   (interactive "P")
   (unless no-fetch
     (package-refresh-contents))
-  (package-utils-ensure-upgrades-available)
-  (let ((packages (mapcar #'epl-package-name (epl-outdated-packages))))
-    (unless dry-run
-      (epl-upgrade))
-    (message "%s packages: %s" (if dry-run "Upgradable" "Upgraded") (mapconcat 'symbol-name packages ", "))))
+  (if (package-utils-has-upgradable-packages-p)
+      (let ((packages (mapcar #'epl-package-name (epl-outdated-packages))))
+        (unless dry-run
+          (epl-upgrade))
+        (message "%s packages: %s" (if dry-run "Upgradable" "Upgraded") (mapconcat 'symbol-name packages ", ")))
+    (message "All packages are already up to date.")))
 
 ;;;###autoload
 (defun package-utils-upgrade-all-no-fetch ()
