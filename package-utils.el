@@ -31,14 +31,18 @@
 
 (require 'epl)
 
+(defun package-utils-upgradable-packages ()
+  "Return the list of upgradable packages as a list of symbols."
+  (mapcar #'epl-package-name (epl-outdated-packages)))
+
 (defun package-utils-has-upgradable-packages-p ()
   "Returns true if there are packages to upgrade, nil otherwise."
-  (not (null (epl-outdated-packages))))
+  (not (null (package-utils-upgradable-packages))))
 
 (defun package-utils-read-upgradable-package ()
   "Read the name of a package to upgrade."
   (completing-read "Upgrade package: "
-                   (mapcar #'symbol-name (mapcar #'epl-package-name (epl-outdated-packages)))
+                   (mapcar #'symbol-name (package-utils-upgradable-packages))
                    nil
                    'require-match))
 
@@ -60,7 +64,7 @@ When DRY-RUN is true, only display what packages would be upgraded."
   (unless no-fetch
     (package-refresh-contents))
   (if (package-utils-has-upgradable-packages-p)
-      (let ((packages (mapcar #'epl-package-name (epl-outdated-packages))))
+      (let ((packages (package-utils-upgradable-packages)))
         (unless dry-run
           (epl-upgrade))
         (message "%s packages: %s" (if dry-run "Upgradable" "Upgraded") (mapconcat 'symbol-name packages ", ")))
