@@ -46,6 +46,14 @@
                    nil
                    'require-match))
 
+(defun package-utils-upgradable-p (name)
+  "Returns true if NAME can be upgraded, nil otherwise.
+
+NAME can be a string or a symbol."
+  (unless (symbolp name)
+    (setq name (intern name)))
+  (not (null (member name (package-utils-upgradable-packages)))))
+
 ;;;###autoload
 (defun package-utils-list-upgrades (&optional no-fetch)
   "List all packages that can be upgraded.
