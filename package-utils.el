@@ -76,6 +76,8 @@ When DRY-RUN is true, only display what packages would be upgraded."
 (defun package-utils-upgrade-by-name (name &optional no-fetch)
   "Upgrade the package NAME.
 
+NAME can be a string or a symbol.
+
 With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   (interactive
    (progn
@@ -83,24 +85,32 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
        (package-refresh-contents))
      (list (package-utils-read-upgradable-package)
            current-prefix-arg)))
-  (epl-upgrade (epl-find-installed-packages (intern name)))
+  (unless (symbolp name)
+    (setq name (intern name)))
+  (epl-upgrade (epl-find-installed-packages name))
   (message "Package \"%s\" was upgraded." name))
 
 ;;;###autoload
 (defun package-utils-upgrade-by-name-no-fetch (name)
-  "Upgrade the package NAME, without calling `package-refresh-contents' first."
+  "Upgrade the package NAME, without calling `package-refresh-contents' first.
+
+NAME can be a string or a symbol."
   (interactive (list (package-utils-read-upgradable-package)))
   (package-utils-upgrade-by-name name t))
 
 ;;;###autoload
 (defun package-utils-remove-by-name (name)
-  "Uninstall the package NAME."
+  "Uninstall the package NAME.
+
+NAME can be a string or a symbol."
   (interactive
    (list (completing-read "Remove package: "
                           (mapcar #'symbol-name (mapcar #'epl-package-name (epl-installed-packages)))
                           nil
                           'require-match)))
-  (epl-package-delete (car (epl-find-installed-packages (intern name)))))
+  (unless (symbolp name)
+    (setq name (intern name)))
+  (epl-package-delete (car (epl-find-installed-packages name))))
 
 (provide 'package-utils)
 
