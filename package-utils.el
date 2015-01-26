@@ -35,6 +35,10 @@
   "Return the list of upgradable packages as a list of symbols."
   (mapcar #'epl-package-name (epl-outdated-packages)))
 
+(defun package-utils-installed-packages ()
+  "Return the list of installed packages as a list of symbols."
+  (mapcar #'epl-package-name (epl-installed-packages)))
+
 (defun package-utils-has-upgradable-packages-p ()
   "Returns true if there are packages to upgrade, nil otherwise."
   (not (null (package-utils-upgradable-packages))))
@@ -117,7 +121,7 @@ NAME can be a string or a symbol."
 NAME can be a string or a symbol."
   (interactive
    (list (completing-read "Remove package: "
-                          (mapcar #'symbol-name (mapcar #'epl-package-name (epl-installed-packages)))
+                          (mapcar #'symbol-name (package-utils-installed-packages))
                           nil
                           'require-match)))
   (unless (symbolp name)
