@@ -83,7 +83,8 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
        (package-refresh-contents))
      (list (package-utils-read-upgradable-package)
            current-prefix-arg)))
-  (epl-upgrade (epl-find-installed-packages (intern name))))
+  (epl-upgrade (epl-find-installed-packages (intern name)))
+  (message "Package \"%s\" was upgraded." name))
 
 ;;;###autoload
 (defun package-utils-upgrade-by-name-no-fetch (name)
