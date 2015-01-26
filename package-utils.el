@@ -58,6 +58,14 @@ NAME can be a string or a symbol."
     (setq name (intern name)))
   (not (null (member name (package-utils-upgradable-packages)))))
 
+(defun package-utils-installed-p (name)
+  "Returns true if NAME is installed, nil otherwise.
+
+NAME can be a string or a symbol."
+  (unless (symbolp name)
+    (setq name (intern name)))
+  (not (null (member name (package-utils-installed-packages)))))
+
 ;;;###autoload
 (defun package-utils-list-upgrades (&optional no-fetch)
   "List all packages that can be upgraded.
