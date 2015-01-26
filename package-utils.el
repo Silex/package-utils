@@ -111,6 +111,8 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
            current-prefix-arg)))
   (unless (symbolp name)
     (setq name (intern name)))
+  (unless (package-utils-upgradable-p name)
+    (error "Package \"%s\" not found in the list of upgradable packages" name))
   (epl-upgrade (epl-find-installed-packages name))
   (message "Package \"%s\" was upgraded." name))
 
