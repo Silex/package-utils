@@ -55,7 +55,7 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   "Upgrade all packages that can be upgraded.
 
 With prefix argument NO-FETCH, do not call `package-refresh-contents'.
-When DRY-RUN is true, only display what packages would be upgraded"
+When DRY-RUN is true, only display what packages would be upgraded."
   (interactive "P")
   (unless no-fetch
     (package-refresh-contents))
