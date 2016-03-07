@@ -141,27 +141,25 @@ NAME can be a string or a symbol."
 ;;;###autoload
 (defun package-utils-list-packages-async ()
   "List packages asynchronously
-
 It get package list by using a subprocess emacs, so it wound't stuck the current emacs"
   (interactive)
   (async-start
    `(lambda ()
-	  ,(async-inject-variables "^package-archives$")
+      ,(async-inject-variables "^package-archives$")
       (require 'finder-inf nil t)
       ;; Initialize the package system if necessary.
       (package-initialize t)
       (let (old-archives new-packages)
-		;; Read the locally-cached archive-contents.
-		(package-read-all-archive-contents)
-		(setq old-archives package-archive-contents)
-		;; Fetch the remote list of packages.
-		(package-refresh-contents)
-		;; Find which packages are new.
-		(dolist (elt package-archive-contents)
-		  (unless (assq (car elt) old-archives)
-			(push (car elt) new-packages)))
-        (setq result-prev (list new-packages package-archive-contents)))
-      )
+        ;; Read the locally-cached archive-contents.
+        (package-read-all-archive-contents)
+        (setq old-archives package-archive-contents)
+        ;; Fetch the remote list of packages.
+        (package-refresh-contents)
+        ;; Find which packages are new.
+        (dolist (elt package-archive-contents)
+          (unless (assq (car elt) old-archives)
+            (push (car elt) new-packages)))
+        (setq result-prev (list new-packages package-archive-contents))))
    `(lambda (result)
       (setq package-archive-contents (cadr result))
       (let ((new-packages (car result)))
@@ -175,7 +173,6 @@ It get package list by using a subprocess emacs, so it wound't stuck the current
           ;; The package menu buffer has keybindings.  If the user types
           ;; `M-x list-packages', that suggests it should become current.
           (switch-to-buffer buf))
-
         (let ((upgrades (package-menu--find-upgrades)))
           (if upgrades
               (message "%d package%s can be upgraded; type `%s' to mark %s for upgrading."
@@ -190,13 +187,14 @@ It get package list by using a subprocess emacs, so it wound't stuck the current
   (interactive "Swhich package do you want to install?")
   (async-start
    `(lambda ()
-	  ,(async-inject-variables "^package-archives$")
+      ,(async-inject-variables "^package-archives$")
       ;; Initialize the package system if necessary.
       (package-initialize t)
-	  (package-install ',package))
+      (package-install ',package))
    `(lambda (result)
-	 (package-initialize nil)
-	 (message "%s installed" ',package))))
+      (package-initialize nil)
+      (message "%s installed" ',package))))
+
 (provide 'package-utils)
 
 ;;; package-utils.el ends here
