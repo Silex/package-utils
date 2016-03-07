@@ -140,8 +140,7 @@ NAME can be a string or a symbol."
 
 ;;;###autoload
 (defun package-utils-list-packages-async ()
-  "List packages asynchronously
-It get package list by using a subprocess emacs, so it wound't stuck the current emacs"
+  "Like `package-list-packages', but works asynchronously."
   (interactive)
   (async-start
    `(lambda ()
@@ -183,8 +182,8 @@ It get package list by using a subprocess emacs, so it wound't stuck the current
 
 ;;;###autoload
 (defun package-utils-install-async (package)
-  "Using subprocess emacs to install package"
-  (interactive "Swhich package do you want to install?")
+  "Like `package-install', but works asynchronously."
+  (interactive "SInstall package?")
   (async-start
    `(lambda ()
       ,(async-inject-variables "^package-archives$")

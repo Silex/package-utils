@@ -38,11 +38,11 @@ The following interactive functions are available:
 
 * <kbd>M-x package-utils-list-packages-async</kbd>
 
-  List packages asynchronously. It get package list by using a subprocess emacs, so it wound't stuck the current emacs.
+  Like `package-list-packages`, but works asynchronously.
 
 * <kbd>M-x package-utils-install-async</kbd>
 
-  Using subprocess emacs to install package.
+  Like `package-install`, but works asynchronously.
 
 ## Contributions welcome!
 
