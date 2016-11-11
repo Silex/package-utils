@@ -139,48 +139,6 @@ NAME can be a string or a symbol."
   (epl-package-delete (car (epl-find-installed-packages name))))
 
 ;;;###autoload
-(defun package-utils-list-packages-async ()
-  "Like `package-list-packages', but works asynchronously."
-  (interactive)
-  (async-start
-   `(lambda ()
-      ,(async-inject-variables "^package-archives$")
-      (require 'finder-inf nil t)
-      ;; Initialize the package system if necessary.
-      (package-initialize t)
-      (let (old-archives new-packages)
-        ;; Read the locally-cached archive-contents.
-        (package-read-all-archive-contents)
-        (setq old-archives package-archive-contents)
-        ;; Fetch the remote list of packages.
-        (package-refresh-contents)
-        ;; Find which packages are new.
-        (dolist (elt package-archive-contents)
-          (unless (assq (car elt) old-archives)
-            (push (car elt) new-packages)))
-        (setq result-prev (list new-packages package-archive-contents))))
-   `(lambda (result)
-      (setq package-archive-contents (cadr result))
-      (let ((new-packages (car result)))
-        ;; Generate the Package Menu.
-        (let ((buf (get-buffer-create "*Packages*")))
-          (with-current-buffer buf
-            (package-menu-mode)
-            (set (make-local-variable 'package-menu--new-package-list)
-                 new-packages)
-            (package-menu--generate nil t))
-          ;; The package menu buffer has keybindings.  If the user types
-          ;; `M-x list-packages', that suggests it should become current.
-          (switch-to-buffer buf))
-        (let ((upgrades (package-menu--find-upgrades)))
-          (if upgrades
-              (message "%d package%s can be upgraded; type `%s' to mark %s for upgrading."
-                       (length upgrades)
-                       (if (= (length upgrades) 1) "" "s")
-                       (substitute-command-keys "\\[package-menu-mark-upgrades]")
-                       (if (= (length upgrades) 1) "it" "them"))))))))
-
-;;;###autoload
 (defun package-utils-install-async (package)
   "Like `package-install', but works asynchronously."
   (interactive "SInstall package?")
