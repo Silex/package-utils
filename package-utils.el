@@ -133,7 +133,23 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
 ;;;###autoload
 (defun package-utils-install-async (package)
   "Like `package-install', but works asynchronously."
-  (interactive "SInstall package?")
+  (interactive
+   ;; Copied from `package-install'
+   (progn
+     ;; Initialize the package system to get the list of package
+     ;; symbols for completion.
+     (unless package--initialized
+       (package-initialize t))
+     (unless package-archive-contents
+       (package-refresh-contents))
+     (list (intern (completing-read
+                    "Install package: "
+                    (delq nil
+                          (mapcar (lambda (elt)
+                                    (unless (package-installed-p (car elt))
+                                      (symbol-name (car elt))))
+                                  package-archive-contents))
+                    nil t)))))
   (async-start
    `(lambda ()
       ,(async-inject-variables "^package-archives$")
