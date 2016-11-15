@@ -29,6 +29,9 @@
 ;;
 ;;; Code:
 
+(require 'package)
+(require 'async)
+
 (defmacro package-utils-with-packages-list (packages &rest body)
   "Evaluate BODY inside a `package-list-package' buffer.
 
