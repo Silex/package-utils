@@ -33,9 +33,10 @@
 (require 'async)
 
 (defmacro package-utils-with-packages-list (packages &rest body)
-  "Evaluate BODY inside a `package-list-package' buffer.
+  "List PACKAGES inside a `package-list-packages' buffer and evaluate BODY.
 
-PACKAGES is the second argument to `package-menu--generate'."
+PACKAGES should be a list of packages, or t for all packages.
+See the second argument to `package-menu--generate'."
   (declare (indent 1))
   `(with-temp-buffer
      (package-menu-mode)
@@ -59,11 +60,11 @@ PACKAGES is the second argument to `package-menu--generate'."
                            'require-match)))
 
 (defun package-utils-upgradable-p (name)
-  "Returns true if NAME can be upgraded, nil otherwise."
+  "Return true if NAME can be upgraded, nil otherwise."
   (not (null (member name (package-utils-upgradable-packages)))))
 
 (defun package-utils-installed-p (name)
-  "Returns true if NAME is installed, nil otherwise."
+  "Return true if NAME is installed, nil otherwise."
   (not (null (member name (package-utils-installed-packages)))))
 
 ;;;###autoload
@@ -135,7 +136,9 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
 
 ;;;###autoload
 (defun package-utils-install-async (package)
-  "Like `package-install', but works asynchronously."
+  "Install PACKAGE asynchronously.
+
+Contrary to `package-install', PACKAGE can only be a symbol."
   (interactive
    ;; Copied from `package-install'
    (progn
