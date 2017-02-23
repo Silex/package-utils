@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 (2017-02-23)
 
 - Remove async functions
 - Add changelog
