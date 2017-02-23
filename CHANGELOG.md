@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Remove async functions
 - Add changelog
 - Improve docstrings
 

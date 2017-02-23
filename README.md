@@ -36,10 +36,6 @@ The following interactive functions are available:
 
   List all packages that can be upgraded (prefix argument: do no refresh packages).
 
-* <kbd>M-x package-utils-install-async</kbd>
-
-  Like `package-install`, but works asynchronously.
-
 ## Contributions welcome!
 
 Either as suggestions or as pull requests by opening tickets on the
