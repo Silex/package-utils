@@ -12,7 +12,7 @@
 - Remove package-utils-list-packages-async.
 - Improve package-utils-install-async interactive spec.
 
-# 0.4.1 (2016-06-27)
+## 0.4.1 (2016-06-27)
 
 - Update EPL version
 - Fix malformed dependency header
