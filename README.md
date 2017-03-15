@@ -1,3 +1,6 @@
+[![MELPA](http://melpa.org/packages/package-utils-badge.svg)](http://melpa.org/#/package-utils)
+[![MELPA Stable](http://stable.melpa.org/packages/package-utils-badge.svg)](http://stable.melpa.org/#/package-utils)
+
 # Package Utils
 
 Interactive extensions for `package.el`
