@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Add `package-utils-upgrade-all-and-quit` function.
+- Add `package-utils-upgrade-all-and-restart` function.
 
 ## 0.5.0 (2017-02-23)
 

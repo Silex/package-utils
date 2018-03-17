@@ -4,6 +4,7 @@
 ;; URL: https://github.com/Silex/package-utils
 ;; Keywords: package, convenience
 ;; Version: 0.5.0
+;; Package-Requires: ((restart-emacs "0.1.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -108,6 +109,15 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   (interactive "P")
   (package-utils-upgrade-all no-fetch)
   (save-buffers-kill-emacs t))
+
+;;;###autoload
+(defun package-utils-upgrade-all-and-restart (&optional no-fetch)
+  "Upgrade all packages that can be upgraded, then restart emacs.
+
+With prefix argument NO-FETCH, do not call `package-refresh-contents'."
+  (interactive "P")
+  (package-utils-upgrade-all no-fetch)
+  (restart-emacs))
 
 ;;;###autoload
 (defun package-utils-upgrade-by-name (name &optional no-fetch)
