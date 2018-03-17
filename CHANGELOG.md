@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add `package-utils-upgrade-all-and-quit` function.
+
 ## 0.5.0 (2017-02-23)
 
 - Remove async functions

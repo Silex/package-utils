@@ -101,6 +101,15 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   (package-utils-upgrade-all t))
 
 ;;;###autoload
+(defun package-utils-upgrade-all-and-quit (&optional no-fetch)
+  "Upgrade all packages that can be upgraded, then quit emacs.
+
+With prefix argument NO-FETCH, do not call `package-refresh-contents'."
+  (interactive "P")
+  (package-utils-upgrade-all no-fetch)
+  (save-buffers-kill-emacs t))
+
+;;;###autoload
 (defun package-utils-upgrade-by-name (name &optional no-fetch)
   "Upgrade the package NAME.
 

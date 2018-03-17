@@ -19,6 +19,10 @@ The following interactive functions are available:
 
   Upgrades all packages that can be upgraded (prefix argument: do no refresh packages).
 
+* <kbd>M-x package-utils-upgrade-all-and-quit</kbd>
+
+  Upgrades all packages that can be upgraded and quit Emacs (prefix argument: do no refresh packages).
+
 * <kbd>M-x package-utils-upgrade-all-no-fetch</kbd>
 
   Upgrades all packages that can be upgraded without refreshing the packages list.
