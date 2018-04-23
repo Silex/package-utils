@@ -1,4 +1,4 @@
-;;; package-utils.el --- Extensions for package.el
+;;; package-utils.el --- Extensions for package.el  -*- lexical-binding: t -*-
 
 ;; Author: Philippe Vaucher <philippe.vaucher@gmail.com>
 ;; URL: https://github.com/Silex/package-utils
