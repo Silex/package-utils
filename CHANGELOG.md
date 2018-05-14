@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.1 (2018-05-14)
 
 - Wait a little before restarting to ensure upgrades are done.
 

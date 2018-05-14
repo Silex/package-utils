@@ -3,7 +3,7 @@
 ;; Author: Philippe Vaucher <philippe.vaucher@gmail.com>
 ;; URL: https://github.com/Silex/package-utils
 ;; Keywords: package, convenience
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Package-Requires: ((restart-emacs "0.1.1"))
 
 ;; This file is NOT part of GNU Emacs.
