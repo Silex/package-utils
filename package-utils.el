@@ -108,6 +108,7 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
 With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   (interactive "P")
   (package-utils-upgrade-all no-fetch)
+  (sleep-for 1)
   (save-buffers-kill-emacs t))
 
 ;;;###autoload
@@ -117,6 +118,7 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
 With prefix argument NO-FETCH, do not call `package-refresh-contents'."
   (interactive "P")
   (package-utils-upgrade-all no-fetch)
+  (sleep-for 1)
   (restart-emacs))
 
 ;;;###autoload

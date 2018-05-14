@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Wait a little before restarting to ensure upgrades are done.
+
 ## 1.0.0 (2018-03-17)
 
 - Add `package-utils-upgrade-all-and-quit` function.
