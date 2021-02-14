@@ -30,6 +30,7 @@
 ;;; Code:
 
 (require 'package)
+(require 'cl-lib) ;; For `cl-letf'.
 
 (defmacro package-utils-with-packages-list (packages &rest body)
   "List PACKAGES inside a `package-list-packages' buffer and evaluate BODY.
@@ -66,6 +67,72 @@ See the second argument to `package-menu--generate'."
   "Return true if NAME is installed, nil otherwise."
   (not (null (member name (package-utils-installed-packages)))))
 
+(defun package-utils--byte-recompile-all-packages ()
+  "Recompile all `byte-code' for all packages in `package-alist'."
+  ;; We could use `load-paths', instead - find all package paths.
+  (let ((load-path-extracted
+         (mapcar (lambda (item)
+                   (pcase-let ((`(,_pkg-key . ,pkg-desc) item))
+                     (package-desc-dir (car pkg-desc))))
+                 package-alist))
+        (load-paths-to-compile (list))
+        (cache-delete-len 0)
+        (emacs-binary (executable-find (car command-line-args)))
+        (message-log-max nil)
+        (print-fn (if noninteractive
+                      (lambda (_proc str) (princ str))
+                    (lambda (_proc str) (message str)))))
+
+    (unless emacs-binary
+      (user-error "Cannot find Emacs own binary!"))
+
+    ;; First run emacs, dumping the load paths into a temporary file.
+    (dolist (p load-path-extracted)
+      ;; When upgrading, the previous load path from the older
+      ;; package is still in the list,
+      ;; even though it has been deleted.
+      (when (file-directory-p p)
+        ;; Safety check that we have write permissions.
+        (when (file-writable-p p)
+          (push p load-paths-to-compile))))
+
+    ;; Clearing.
+    (dolist (p load-paths-to-compile)
+      (dolist (cache-file (directory-files p t "\\.elc\\'"))
+        (delete-file cache-file)
+        (setq cache-delete-len (1+ cache-delete-len))))
+
+    (message "Removed: %d '.elc' file(s) from %d path(s)"
+             cache-delete-len
+             (length load-paths-to-compile))
+
+    ;; Now run a fresh Emacs instance with the load paths set,
+    ;; recompile all directories.
+    (let ((temp-file (make-temp-file "emacs-recompile" nil ".el")))
+      (with-temp-file temp-file
+        (insert "(defvar my-paths '")
+        (prin1 load-paths-to-compile (current-buffer))
+        (insert ")\n")
+        (insert "(setq load-path (append load-path my-paths))\n")
+        (insert "(dolist (p my-paths) "
+                "(byte-recompile-directory p 0 t))"))
+      (let ((proc
+             (make-process
+              :name "emacs-recompile-all-proc"
+              :filter print-fn
+              ;; Don't encode `stdout' as string.
+              :coding 'no-conversion
+              :command
+              (list emacs-binary
+                    "-Q" "--batch" "--script" temp-file "--kill")
+              :connection-type 'pipe)))
+        (while (accept-process-output proc)))
+      (delete-file temp-file))
+
+    (message "Recompiled: %d directories"
+             (length load-paths-to-compile))))
+
+
 ;;;###autoload
 (defun package-utils-list-upgrades (&optional no-fetch)
   "List all packages that can be upgraded.
@@ -83,23 +150,42 @@ With prefix argument NO-FETCH, do not call `package-refresh-contents'."
 (defun package-utils-upgrade-all (&optional no-fetch)
   "Upgrade all packages that can be upgraded.
 
-With prefix argument NO-FETCH, do not call `package-refresh-contents'."
+With prefix argument NO-FETCH, do not call `package-refresh-contents'.
+
+Return true if there were packages to install, nil otherwise."
   (interactive "P")
   (unless no-fetch
     (package-refresh-contents))
   (let ((packages (package-utils-upgradable-packages)))
     (if (null packages)
-        (message "All packages are already up to date.")
+        (progn
+          (message "All packages are already up to date.")
+          nil)
       (package-utils-with-packages-list t
         (package-menu-mark-upgrades)
         (package-menu-execute t))
-      (message "Upgraded packages: %s" (mapconcat 'symbol-name packages ", ")))))
+      (message "Upgraded packages: %s" (mapconcat 'symbol-name packages ", "))
+      t)))
 
 ;;;###autoload
 (defun package-utils-upgrade-all-no-fetch ()
   "Upgrade all packages that can be upgraded without calling `package-refresh-contents' first."
   (interactive)
   (package-utils-upgrade-all t))
+
+;;;###autoload
+(defun package-utils-upgrade-all-and-recompile (&optional no-fetch)
+  "Upgrade all packages that can be upgraded, and recompile all byte-code.
+
+With prefix argument NO-FETCH, do not call `package-refresh-contents'."
+
+  (interactive "P")
+  ;; Prevent redundant recompile on package installation,
+  ;; since this is performed afterwards.
+  (when (cl-letf (((symbol-function 'byte-recompile-directory)
+                   (lambda (&rest _args))))
+          (package-utils-upgrade-all no-fetch))
+    (package-utils--byte-recompile-all-packages)))
 
 ;;;###autoload
 (defun package-utils-upgrade-all-and-quit (&optional no-fetch)
