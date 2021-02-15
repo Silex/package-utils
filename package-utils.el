@@ -108,30 +108,26 @@ See the second argument to `package-menu--generate'."
 
     ;; Now run a fresh Emacs instance with the load paths set,
     ;; recompile all directories.
-    (let ((temp-file (make-temp-file "emacs-recompile" nil ".el")))
-      (with-temp-file temp-file
-        (insert "(defvar my-paths '")
-        (prin1 load-paths-to-compile (current-buffer))
-        (insert ")\n")
-        (insert "(setq load-path (append load-path my-paths))\n")
-        (insert "(dolist (p my-paths) "
-                "(byte-recompile-directory p 0 t))"))
-      (let ((proc
-             (make-process
-              :name "emacs-recompile-all-proc"
-              :filter print-fn
-              ;; Don't encode `stdout' as string.
-              :coding 'no-conversion
-              :command
-              (list emacs-binary
-                    "-Q" "--batch" "--script" temp-file "--kill")
-              :connection-type 'pipe)))
-        (while (accept-process-output proc)))
-      (delete-file temp-file))
-
-    (message "Recompiled: %d directories"
-             (length load-paths-to-compile))))
-
+    (let* ((path-str (prin1-to-string load-paths-to-compile))
+	   (input (concat "(progn"
+               "(nconc load-path '" path-str ")"
+               "(dolist (p '" path-str ")"
+               "(byte-recompile-directory p 0 t)))"))
+	   (proc (make-process
+		  :name "emacs-recompile-all-proc"
+		  :filter print-fn
+		  ;; Don't encode `stdout' as string.
+		  :coding 'no-conversion
+		  :command
+		  (list emacs-binary
+			"-Q" "--batch" "--eval" "(eval (read))" "--kill")
+		  :connection-type 'pipe
+		  :sentinel (lambda (process _msg)
+			      (when (eq (process-status process) 'exit)
+				(message "Recompiled: %d directories"
+					 (length load-paths-to-compile)))))))
+      (process-send-string proc input)
+      (process-send-eof proc))))
 
 ;;;###autoload
 (defun package-utils-list-upgrades (&optional no-fetch)
