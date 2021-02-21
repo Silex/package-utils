@@ -108,29 +108,40 @@ See the second argument to `package-menu--generate'."
 
     ;; Now run a fresh Emacs instance with the load paths set,
     ;; recompile all directories.
-    (let ((temp-file (make-temp-file "emacs-recompile" nil ".el")))
-      (with-temp-file temp-file
-        (insert "(defvar my-paths '")
-        (prin1 load-paths-to-compile (current-buffer))
-        (insert ")\n")
-        (insert "(setq load-path (append load-path my-paths))\n")
-        (insert "(dolist (p my-paths) "
-                "(byte-recompile-directory p 0 t))"))
-      (let ((proc
-             (make-process
-              :name "emacs-recompile-all-proc"
-              :filter print-fn
-              ;; Don't encode `stdout' as string.
-              :coding 'no-conversion
-              :command
-              (list emacs-binary
-                    "-Q" "--batch" "--script" temp-file "--kill")
-              :connection-type 'pipe)))
-        (while (accept-process-output proc)))
-      (delete-file temp-file))
+    (let ((proc-script
+           ;; The script to recompile code, passed to the `stdin'.
+           (concat
+            "(let ((paths '" (prin1-to-string load-paths-to-compile) "))"
+            "(nconc load-path paths)"
+            "(dolist (p paths) (byte-recompile-directory p 0 t)))"))
+          (proc
+           (make-process
+            :name "emacs-recompile-all-proc"
+            :filter print-fn
+            ;; Don't encode `stdout' as string.
+            :coding 'no-conversion
+            :command
+	    (list emacs-binary
+		  "-Q" "--batch" "--eval" "(eval (read))" "--kill")
+            :connection-type 'pipe
+            :sentinel
+            (lambda (process msg)
+              (let ((status (process-status process)))
+                (cond
+                 ((eq status 'exit)
+                  (message "Recompile: success with %d directories"
+                           (length load-paths-to-compile)))
+                 (t
+                  (message "Recompile: failed with status %S, %S"
+                           status msg))))))))
 
-    (message "Recompiled: %d directories"
-             (length load-paths-to-compile))))
+      (process-send-string proc proc-script)
+      (process-send-eof proc)
+
+      ;; When running as a batch job,
+      ;; block until the process is finished.
+      (when noninteractive
+        (while (accept-process-output proc))))))
 
 
 ;;;###autoload
