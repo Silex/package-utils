@@ -180,7 +180,9 @@ Return true if there were packages to install, nil otherwise."
 
 ;;;###autoload
 (defun package-utils-upgrade-all-no-fetch ()
-  "Upgrade all packages that can be upgraded without calling `package-refresh-contents' first."
+  "Upgrade all packages that can be upgraded without refreshing first.
+
+This skips calling `package-refresh-contents'."
   (interactive)
   (package-utils-upgrade-all t))
 
