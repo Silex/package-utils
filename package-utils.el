@@ -148,14 +148,21 @@ See the second argument to `package-menu--generate'."
 (defun package-utils-list-upgrades (&optional no-fetch)
   "List all packages that can be upgraded.
 
-With prefix argument NO-FETCH, do not call `package-refresh-contents'."
+With prefix argument NO-FETCH, do not call `package-refresh-contents'.
+
+Return true if there were packages to install, nil otherwise."
   (interactive "P")
   (unless no-fetch
     (package-refresh-contents))
   (let ((packages (package-utils-upgradable-packages)))
-    (if (null packages)
-        (message "All packages are already up to date.")
-      (message "Upgradable packages: %s" (mapconcat #'symbol-name packages ", ")))))
+    (cond
+     (packages
+      (message "Upgradable packages: %s"
+               (mapconcat #'symbol-name packages ", "))
+      t)
+     (t
+      (message "All packages are already up to date.")
+      nil))))
 
 ;;;###autoload
 (defun package-utils-upgrade-all (&optional no-fetch)
