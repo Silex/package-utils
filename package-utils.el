@@ -46,7 +46,8 @@ See the second argument to `package-menu--generate'."
 (defun package-utils-upgradable-packages ()
   "Return the list of upgradable packages as a list of symbols."
   (package-utils-with-packages-list t
-    (mapcar #'car (package-menu--find-upgrades))))
+    ;; Multiple repositories may have the same packages, remove duplicates.
+    (delete-dups (mapcar #'car (package-menu--find-upgrades)))))
 
 (defun package-utils-installed-packages ()
   "Return the list of installed packages as a list of symbols."
